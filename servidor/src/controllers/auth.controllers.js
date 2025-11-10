@@ -46,7 +46,9 @@ export const register = async (req, res) => {
     await UserRoleModel.create({ user_id: user.id, role_id: roles });
     return res.status(201).json({ message: "Usuario registrado exitosamente" });
   } catch (error) {
-    return res.status(500).json({ message: "Error al registrar usuario", error });
+    return res
+      .status(500)
+      .json({ message: "Error al registrar usuario", error });
   }
 };
 
