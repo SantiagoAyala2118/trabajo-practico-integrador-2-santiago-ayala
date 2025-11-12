@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "../hooks/useForm";
 
 export const RegisterPage = () => {
@@ -12,7 +12,7 @@ export const RegisterPage = () => {
 
   const navigate = useNavigate();
 
-  const registerFunction = async () => {
+  const registerFetch = async () => {
     try {
       const res = await fetch("http://localhost:3000/api/register", {
         method: "POST",
@@ -50,7 +50,7 @@ export const RegisterPage = () => {
 
         <form
           className="space-y-5"
-          onSubmit={(e) => (registerFunction(), handleSubmit(e))}
+          onSubmit={(e) => (registerFetch(), handleSubmit(e))}
         >
           <div>
             <label className="block mb-1 text-sm font-medium">Nombre</label>
@@ -124,9 +124,9 @@ export const RegisterPage = () => {
 
         <p className="text-sm text-center mt-5 text-white/60">
           ¿Ya tenés una cuenta?{" "}
-          <a href="/login" className="text-white hover:underline">
+          <Link to="/login" className="text-white hover:underline">
             Iniciá sesión
-          </a>
+          </Link>
         </p>
       </div>
     </div>
