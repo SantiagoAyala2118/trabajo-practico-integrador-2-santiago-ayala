@@ -3,6 +3,7 @@ import { PublicRouter } from "./PublicRouter";
 import { PrivateRouter } from "./PrivateRouter";
 import { RegisterPage } from "../pages/RegisterPage";
 import { Login } from "../pages/LoginPage";
+import { HomePage } from "../pages/HomePage";
 
 export const AppRouter = () => {
   return (
@@ -15,7 +16,9 @@ export const AppRouter = () => {
           <Route path="*" element={<RegisterPage />} />
         </Route>
 
-        <Route>{/* <Route path="/home" element={<}/> */}</Route>
+        <Route>
+          <Route path="/home" element={<HomePage />} />
+        </Route>
       </Routes>
     </>
   );
