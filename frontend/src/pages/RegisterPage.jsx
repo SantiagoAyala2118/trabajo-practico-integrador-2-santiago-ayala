@@ -37,9 +37,10 @@ export const RegisterPage = () => {
           res.statusText
         );
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("registro exitoso");
+      console.log(formState);
       setIsLoading(false);
+
       navigate("/login");
     } catch (err) {
       console.log("Error haciendo el fetch", err);
