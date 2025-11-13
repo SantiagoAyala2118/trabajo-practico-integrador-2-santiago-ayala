@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 export const TasksPage = () => {
-  const [tasks, setTasks] = useState([{}]);
+  const [tasks, setTasks] = useState([]);
 
   const getTasks = async () => {
     try {
@@ -59,7 +59,7 @@ export const TasksPage = () => {
         {/* Card principal con listado */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <article className="md:col-span-2 bg-white/4 border border-white/8 rounded-2xl p-5 shadow-md">
-            <h3 className="text-lg font-semibold mb-3">Tareas recientes</h3>
+            <h3 className="text-lg font-semibold mb-3">Todas las tareas</h3>
 
             {tasks.length > 0 ? (
               <ul className="space-y-3">
@@ -71,9 +71,6 @@ export const TasksPage = () => {
                     >
                       <div className="text-sm text-white/90 truncate">
                         {task.title ?? "Sin título"}
-                      </div>
-                      <div className="text-xs text-white/60 ml-4">
-                        {task?.status ?? ""}
                       </div>
                     </li>
                   );
@@ -97,19 +94,22 @@ export const TasksPage = () => {
                 Crear tarea
               </Link>
               <Link
-                type="button"
+                to={"/update-task"}
                 className="w-full text-left py-2 px-3 rounded-md bg-white/10 hover:bg-white/20 transition"
               >
-                Ver todas
+                Actualizar una tarea
               </Link>
               <Link
-                type="button"
+                to={"/delete-task"}
                 className="w-full text-left py-2 px-3 rounded-md bg-white/10 hover:bg-white/20 transition"
               >
-                Ir al perfil
+                Eliminar una tarea
               </Link>
             </div>
           </aside>
+          <button className="inline-block py-2 px-4 rounded-lg bg-gradient-to-r from-[#0047ff]/60 to-[#ff355e]/60 hover:from-[#0047ff] hover:to-[#ff355e] transition shadow-sm font-medium">
+            Hola
+          </button>
         </section>
       </div>
     </main>
