@@ -42,15 +42,14 @@ export const Navbar = ({ onAuth = false, onLogout }) => {
             </svg>
           </button>
 
-          <h1
-            className="text-lg font-semibold tracking-wide text-white/90 cursor-pointer"
+          <img
+            src="../public/logo-sin-fondo-2.png"
+            className="w-60 h-25 text-lg font-semibold tracking-wide text-white/90 cursor-pointer"
             onClick={() => {
               // ir a home si no estamos
               if (location.pathname !== "/home") navigate("/home");
             }}
-          >
-            Bienvenido
-          </h1>
+          ></img>
         </div>
 
         {/* Links desktop */}
