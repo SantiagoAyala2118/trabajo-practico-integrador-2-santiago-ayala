@@ -42,7 +42,7 @@ export const TasksPage = () => {
               Tus tareas
             </h2>
             <p className="text-sm text-white/70 max-w-lg">
-              Este es el listado de todas las tareas que aún tienes pendientes
+              Este es el listado de todas tus tareas pendientes y completadas
             </p>
           </div>
 
