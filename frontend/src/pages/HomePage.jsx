@@ -3,12 +3,16 @@ import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { Loading } from "../components/Loading";
 
-export const HomePage = ({ user = null, stats = null }) => {
+export const HomePage = () => {
   const [userData, setUserData] = useState({
     name: null,
     lastname: null,
     loading: false,
   });
+
+  //* ESTADO DE TAREAS
+  const [tasksCompleted, setTasksCompleted] = useState([]);
+  const [pendingTasks, setPendingTasks] = useState([]);
 
   //* FETCH PARA CONSEGUIR LOS DATOS DEL USUARIO
   const getUserData = async () => {
@@ -46,7 +50,7 @@ export const HomePage = ({ user = null, stats = null }) => {
   };
 
   //* FETCH PARA CONSEGUIR LOS DATOS DE LAS TAREAS
-  const [tasks, setTasks] = useState([{}]);
+  const [tasks, setTasks] = useState([]);
 
   const getTasks = async () => {
     try {
@@ -64,9 +68,19 @@ export const HomePage = ({ user = null, stats = null }) => {
       }
 
       const userTasks = await tasksFetch.json();
-
-      console.log(userTasks);
       setTasks(userTasks);
+
+      //* ACÁ OBTENGO LAS TASKS COMPLETADAS
+      const completed = userTasks.filter((task) => {
+        return task.is_completed == true || task.is_completed == 1;
+      });
+      setTasksCompleted(completed);
+
+      //* ACÁ OBTENGO LAS TAREAS PENDIENTES
+      const incompleted = userTasks.filter((task) => {
+        return task.is_completed == false || task.is_completed == 0;
+      });
+      setPendingTasks(incompleted);
 
       return tasks;
     } catch (err) {
@@ -78,12 +92,6 @@ export const HomePage = ({ user = null, stats = null }) => {
     getUserData();
     getTasks();
   }, []);
-
-  // let pendingTasks;
-  // for (let task = 0; tasks.length; +1) {
-  //   tasks.is_completed === 0 ? task + 1 : task;
-  //   pendingTasks = task;
-  // }
 
   const { name, lastname, loading } = userData;
 
@@ -107,8 +115,7 @@ export const HomePage = ({ user = null, stats = null }) => {
             </h2>
             <p className="text-sm text-white/70 max-w-lg">
               Acá podés ver un resumen rápido de tus tareas, navegar a Tasks y
-              revisar tu perfil. Esto es sólo la interfaz — la lógica de datos
-              la prendés vos cuando quieras.
+              revisar tu perfil.
             </p>
 
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -131,17 +138,7 @@ export const HomePage = ({ user = null, stats = null }) => {
           {/* Imagen / resumen pequeño (opcional) */}
           <div className="w-full md:w-64 flex-shrink-0">
             <div className="bg-gradient-to-br from-white/3 to-white/2 p-4 rounded-xl border border-white/6">
-              <p className="text-xs text-white/60 mb-2">Estado</p>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm text-white/80">Nivel</div>
-                  <div className="text-lg font-semibold">Principiante</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-white/60">Progreso</div>
-                  <div className="mt-1 text-sm font-semibold">23%</div>
-                </div>
-              </div>
+              <img src="../public/logo-sin-fondo-2.png" alt="Logotipo marca" />
             </div>
           </div>
         </section>
@@ -189,7 +186,9 @@ export const HomePage = ({ user = null, stats = null }) => {
             </div>
             <div className="flex-1">
               <p className="text-xs text-white/60">Completadas</p>
-              <p className="text-2xl font-semibold text-white/80">{}</p>
+              <p className="text-2xl font-semibold text-white/80">
+                {tasksCompleted.length}
+              </p>
             </div>
           </div>
 
@@ -211,7 +210,9 @@ export const HomePage = ({ user = null, stats = null }) => {
             </div>
             <div className="flex-1">
               <p className="text-xs text-white/60">Pendientes</p>
-              <p className="text-2xl font-semibold text-white/80">{}</p>
+              <p className="text-2xl font-semibold text-white/80">
+                {pendingTasks.length}
+              </p>
             </div>
           </div>
         </section>
@@ -226,18 +227,16 @@ export const HomePage = ({ user = null, stats = null }) => {
             </p>
 
             <ul className="space-y-3">
-              <li className="flex items-center justify-between bg-white/3 p-3 rounded-md">
-                <div className="text-sm">Estudiar PSeInt</div>
-                <div className="text-xs text-white/60">Pendiente</div>
-              </li>
-              <li className="flex items-center justify-between bg-white/3 p-3 rounded-md">
-                <div className="text-sm">Armar presentación</div>
-                <div className="text-xs text-white/60">Completada</div>
-              </li>
-              <li className="flex items-center justify-between bg-white/3 p-3 rounded-md">
-                <div className="text-sm">Hacer seed de DB</div>
-                <div className="text-xs text-white/60">Completada</div>
-              </li>
+              {tasks.map((task) => {
+                return (
+                  <li
+                    key={task.id}
+                    className="flex items-center justify-between bg-white/3 p-3 rounded-md"
+                  >
+                    {task.title}
+                  </li>
+                );
+              })}
             </ul>
           </article>
 
