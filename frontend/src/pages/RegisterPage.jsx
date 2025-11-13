@@ -1,7 +1,11 @@
 import { Link, useNavigate } from "react-router";
 import { useForm } from "../hooks/useForm";
+import { useState } from "react";
+import { Loading } from "../components/Loading";
 
 export const RegisterPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { formState, handleChange, handleSubmit } = useForm({
     name: "",
     lastname: "",
@@ -13,6 +17,8 @@ export const RegisterPage = () => {
   const navigate = useNavigate();
 
   const registerFetch = async () => {
+    setIsLoading(true);
+
     try {
       const res = await fetch("http://localhost:3000/api/register", {
         method: "POST",
@@ -30,16 +36,23 @@ export const RegisterPage = () => {
           res.statusText
         );
       }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const data = await res.json();
-
-      alert("Registro exitoso", JSON.parse(data));
+      setIsLoading(false);
 
       navigate("/login");
     } catch (err) {
       return console.log("Error haciendo el fetch", err);
     }
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black/90 text-white">
