@@ -5,6 +5,9 @@ import { RegisterPage } from "../pages/RegisterPage";
 import { Login } from "../pages/LoginPage";
 import { HomePage } from "../pages/HomePage";
 import { TasksPage } from "../pages/TasksPage";
+import { CreateTaskPage } from "../pages/CreateTaskPage";
+import { UpdateTaskPage } from "../pages/UpdateTaskPage";
+import { DeleteTaskPage } from "../pages/DeleteTaskPage";
 
 export const AppRouter = ({ onLogout }) => {
   return (
@@ -19,10 +22,10 @@ export const AppRouter = ({ onLogout }) => {
 
         <Route element={<PrivateRouter onLogout={onLogout} />}>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/user-tasks" element={<TasksPage />} />
-          {/* <Route path="/create-task" element={<CreateTaskPage />} />
+          <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/create-task" element={<CreateTaskPage />} />
           <Route path="/delete-task" element={<DeleteTaskPage />} />
-          <Route path="/update-task" element={<UpdateTaskPage />} /> */}
+          <Route path="/update-task" element={<UpdateTaskPage />} />
           <Route path="/" element={"/home"} />
           <Route path="*" element={"/home"} />
         </Route>
