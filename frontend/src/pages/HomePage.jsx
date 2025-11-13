@@ -222,12 +222,11 @@ export const HomePage = () => {
           <article className="bg-white/4 border border-white/8 rounded-2xl p-6 shadow-md">
             <h3 className="text-lg font-semibold mb-2">Tareas recientes</h3>
             <p className="text-sm text-white/70 mb-4">
-              Aquí iría una lista de las últimas tareas. Por ahora dejé esto
-              como ejemplo para que armes la lógica.
+              Estas son las últimas tareas que creaste
             </p>
 
             <ul className="space-y-3">
-              {tasks.map((task) => {
+              {[...tasks].slice(-3).map((task) => {
                 return (
                   <li
                     key={task.id}
