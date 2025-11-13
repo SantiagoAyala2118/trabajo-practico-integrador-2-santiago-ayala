@@ -12,6 +12,7 @@ export const RegisterPage = () => {
     username: "",
     email: "",
     password: "",
+    dni: "",
   });
 
   const navigate = useNavigate();
@@ -36,23 +37,16 @@ export const RegisterPage = () => {
           res.statusText
         );
       }
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       setIsLoading(false);
-
       navigate("/login");
     } catch (err) {
-      return console.log("Error haciendo el fetch", err);
+      console.log("Error haciendo el fetch", err);
     }
   };
 
-  if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    );
-  }
+  if (isLoading) return <Loading />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black/90 text-white">
@@ -65,6 +59,7 @@ export const RegisterPage = () => {
           className="space-y-5"
           onSubmit={(e) => (registerFetch(), handleSubmit(e))}
         >
+          {/* Nombre */}
           <div>
             <label className="block mb-1 text-sm font-medium">Nombre</label>
             <input
@@ -77,6 +72,7 @@ export const RegisterPage = () => {
             />
           </div>
 
+          {/* Apellido */}
           <div>
             <label className="block mb-1 text-sm font-medium">Apellido</label>
             <input
@@ -89,6 +85,7 @@ export const RegisterPage = () => {
             />
           </div>
 
+          {/* Usuario */}
           <div>
             <label className="block mb-1 text-sm font-medium">Usuario</label>
             <input
@@ -101,6 +98,7 @@ export const RegisterPage = () => {
             />
           </div>
 
+          {/* Correo */}
           <div>
             <label className="block mb-1 text-sm font-medium">
               Correo electrónico
@@ -115,18 +113,38 @@ export const RegisterPage = () => {
             />
           </div>
 
-          <div>
-            <label className="block mb-1 text-sm font-medium">Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              value={formState.password}
-              onChange={handleChange}
-              placeholder="********"
-              className="w-full px-4 py-2 bg-transparent border border-white/30 rounded-lg placeholder-white/40 focus:outline-none focus:border-white transition"
-            />
+          {/* Contraseña y DNI en la misma fila */}
+          <div className="flex flex-col sm:flex-row sm:gap-4">
+            {/* Contraseña */}
+            <div className="flex-1">
+              <label className="block mb-1 text-sm font-medium">
+                Contraseña
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formState.password}
+                onChange={handleChange}
+                placeholder="********"
+                className="w-full px-4 py-2 bg-transparent border border-white/30 rounded-lg placeholder-white/40 focus:outline-none focus:border-white transition"
+              />
+            </div>
+
+            {/* DNI */}
+            <div className="flex-1 mt-5 sm:mt-0">
+              <label className="block mb-1 text-sm font-medium">DNI</label>
+              <input
+                type="number"
+                name="dni"
+                value={formState.dni}
+                onChange={handleChange}
+                placeholder="12345678"
+                className="w-full px-4 py-2 bg-transparent border border-white/30 rounded-lg placeholder-white/40 focus:outline-none focus:border-white transition"
+              />
+            </div>
           </div>
 
+          {/* Botón */}
           <button
             type="submit"
             className="w-full py-2 bg-white/20 hover:bg-white/30 transition rounded-lg mt-4 font-medium"
