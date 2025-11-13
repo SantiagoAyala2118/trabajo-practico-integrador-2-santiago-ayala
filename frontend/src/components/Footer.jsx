@@ -1,14 +1,20 @@
-export default function Footer() {
+export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-black/90 text-white border-t border-white/10 py-4 mt-auto">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between text-sm text-white/60 px-6">
-        <p className="tracking-wide">
-          © {year} Santiago Ayala — Todos los derechos reservados.
+    <footer className="w-full bg-zinc-950 border-t flex flex-col items-center text-center border-zinc-800 text-zinc-400">
+      <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p className="text-sm text-center sm:text-left">
+          &copy; {year}{" "}
+          <span className="text-white font-medium hover:text-blue-500 transition">
+            Santiago Tomás Ayala
+          </span>
         </p>
-        <p className="mt-2 sm:mt-0 text-white/50">Desarrollado con 💻 y ☕</p>
+
+        <p className="text-xs text-zinc-500 tracking-wide">
+          Desarrollado con 💻 y ☕
+        </p>
       </div>
     </footer>
   );
-}
+};
