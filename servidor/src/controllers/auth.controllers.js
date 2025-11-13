@@ -33,6 +33,7 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   try {
     const { name, lastname, username, email, password } = req.body;
+
     const persona = await PersonModel.create({ name, lastname });
     const user = await UserModel.create({
       username,
