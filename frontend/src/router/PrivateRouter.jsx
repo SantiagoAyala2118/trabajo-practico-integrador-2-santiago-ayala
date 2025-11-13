@@ -28,6 +28,8 @@ export const PrivateRouter = ({ onLogout }) => {
         });
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setAuthState({
         isAuth: true,
         loading: false,
@@ -50,7 +52,7 @@ export const PrivateRouter = ({ onLogout }) => {
         <Loading />
       ) : isAuth ? (
         <>
-          <Navbar onLogout={onLogout} />
+          <Navbar onLogout={onLogout} onAuth={isAuth} />
           <main className="flex-grow">
             <Outlet />
           </main>

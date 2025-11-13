@@ -2,6 +2,7 @@ import { Navigate, Outlet } from "react-router";
 import { useState, useEffect } from "react";
 import { Loading } from "../components/Loading";
 import { Footer } from "../components/Footer";
+import { Navbar } from "../components/Navbar";
 
 export const PublicRouter = () => {
   const [authState, setAuthState] = useState({
@@ -52,6 +53,7 @@ export const PublicRouter = () => {
         <Loading />
       ) : !isAuth ? (
         <>
+          <Navbar />
           <main className="flex-grow">
             <Outlet />
           </main>
