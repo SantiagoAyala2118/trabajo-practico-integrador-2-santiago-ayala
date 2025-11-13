@@ -72,7 +72,7 @@ export const Navbar = ({ onAuth = false, onLogout }) => {
               </NavLink>
 
               <NavLink
-                to="/user-tasks"
+                to="/tasks"
                 className={({ isActive }) =>
                   `tracking-wide transition ${
                     isActive
@@ -97,12 +97,19 @@ export const Navbar = ({ onAuth = false, onLogout }) => {
                 Profile
               </NavLink>
 
-              <button
+              <NavLink
                 onClick={onLogout}
-                className="text-white/70 hover:text-white transition tracking-wide"
+                to="/profile"
+                className={({ isActive }) =>
+                  `tracking-wide transition ${
+                    isActive
+                      ? "text-white font-medium"
+                      : "text-white/70 hover:text-white"
+                  }`
+                }
               >
                 Logout
-              </button>
+              </NavLink>
             </>
           ) : (
             <>
