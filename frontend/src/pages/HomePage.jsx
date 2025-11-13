@@ -1,17 +1,95 @@
 // src/pages/Home.jsx
 import { Link } from "react-router";
+import { useState, useEffect } from "react";
+import { Loading } from "../components/Loading";
 
 export const HomePage = ({ user = null, stats = null }) => {
-  // placeholders entre corchetes si no recibís datos todavía
-  const name = user?.name ?? "[Tu nombre aquí]";
-  const total = stats?.total ?? "[total]";
-  const completed = stats?.completed ?? "[completadas]";
-  const pending =
-    typeof stats?.pending === "number"
-      ? stats.pending
-      : typeof total === "number" && typeof completed === "number"
-      ? total - completed
-      : "[pendientes]";
+  const [userData, setUserData] = useState({
+    name: null,
+    lastname: null,
+    loading: false,
+  });
+
+  //* FETCH PARA CONSEGUIR LOS DATOS DEL USUARIO
+  const getUserData = async () => {
+    setUserData({
+      ...userData,
+      loading: true,
+    });
+
+    try {
+      const userFetch = await fetch("http://localhost:3000/api/profile", {
+        credentials: "include",
+      });
+
+      if (!userFetch.ok) {
+        console.log("Error en el fetch con los datos del usuario");
+        setUserData({
+          name: null,
+          lastname: null,
+          loading: false,
+        });
+      }
+
+      const data = await userFetch.json();
+
+      setUserData({
+        name: data.user.name,
+        lastname: data.user.lastname,
+        loading: false,
+      });
+
+      console.log(data);
+    } catch (err) {
+      console.log("Error trayendo los datos del usuario");
+    }
+  };
+
+  //* FETCH PARA CONSEGUIR LOS DATOS DE LAS TAREAS
+  const [tasks, setTasks] = useState([{}]);
+
+  const getTasks = async () => {
+    try {
+      const tasksFetch = await fetch(
+        "http://localhost:3000/api/tasks-by-user",
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!tasksFetch.ok) {
+        setTasks([]);
+        console.log("Error en las tasks");
+        return;
+      }
+
+      const userTasks = await tasksFetch.json();
+
+      console.log(userTasks);
+      setTasks(userTasks);
+
+      return tasks;
+    } catch (err) {
+      console.error("Error consiguiendo las tasks del usuario", err);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+    getTasks();
+  }, []);
+
+  // let pendingTasks;
+  // for (let task = 0; tasks.length; +1) {
+  //   tasks.is_completed === 0 ? task + 1 : task;
+  //   pendingTasks = task;
+  // }
+
+  const { name, lastname, loading } = userData;
+
+  if (loading) {
+    <Loading />;
+  }
 
   return (
     <main className="min-h-[70vh] py-12 bg-black/90 text-white">
@@ -23,7 +101,7 @@ export const HomePage = ({ user = null, stats = null }) => {
             <h2 className="text-2xl md:text-3xl font-semibold tracking-wide mb-2">
               ¡Bienvenido,{" "}
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00d4ff] via-[#4f46e5] to-[#ff2d55]">
-                {name}
+                {name} {lastname}
               </span>
               !
             </h2>
@@ -89,7 +167,7 @@ export const HomePage = ({ user = null, stats = null }) => {
             </div>
             <div className="flex-1">
               <p className="text-xs text-white/60">Total de tareas</p>
-              <p className="text-2xl font-semibold">{total}</p>
+              <p className="text-2xl font-semibold">{tasks.length}</p>
             </div>
           </div>
 
@@ -111,9 +189,7 @@ export const HomePage = ({ user = null, stats = null }) => {
             </div>
             <div className="flex-1">
               <p className="text-xs text-white/60">Completadas</p>
-              <p className="text-2xl font-semibold text-white/80">
-                {completed}
-              </p>
+              <p className="text-2xl font-semibold text-white/80">{}</p>
             </div>
           </div>
 
@@ -135,7 +211,7 @@ export const HomePage = ({ user = null, stats = null }) => {
             </div>
             <div className="flex-1">
               <p className="text-xs text-white/60">Pendientes</p>
-              <p className="text-2xl font-semibold text-white/80">{pending}</p>
+              <p className="text-2xl font-semibold text-white/80">{}</p>
             </div>
           </div>
         </section>
