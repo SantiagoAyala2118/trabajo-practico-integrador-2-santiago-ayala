@@ -107,9 +107,6 @@ export const TasksPage = () => {
               </Link>
             </div>
           </aside>
-          <button className="inline-block py-2 px-4 rounded-lg bg-gradient-to-r from-[#0047ff]/60 to-[#ff355e]/60 hover:from-[#0047ff] hover:to-[#ff355e] transition shadow-sm font-medium">
-            Hola
-          </button>
         </section>
       </div>
     </main>

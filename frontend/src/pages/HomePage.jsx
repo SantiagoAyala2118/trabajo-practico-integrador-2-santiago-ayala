@@ -7,7 +7,7 @@ export const HomePage = () => {
   const [userData, setUserData] = useState({
     name: null,
     lastname: null,
-    loading: false,
+    loading: true,
   });
 
   //* ESTADO DE TAREAS

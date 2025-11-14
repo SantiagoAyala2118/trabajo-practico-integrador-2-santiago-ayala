@@ -7,7 +7,7 @@ export const CreateTaskPage = () => {
   const { formState, handleChange, handleSubmit } = useForm({
     title: "",
     description: "",
-    is_completed: "",
+    is_completed: false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -98,30 +98,21 @@ export const CreateTaskPage = () => {
             </div>
 
             {/* Campo completada */}
-            <div className="flex flex-col">
+            <div className="flex items-center gap-3 mt-2">
+              <input
+                type="checkbox"
+                id="is_completed"
+                name="is_completed"
+                checked={formState.is_completed}
+                onChange={handleChange}
+                className="w-4 h-4 cursor-pointer"
+              />
               <label
                 htmlFor="is_completed"
-                className="text-sm text-white/70 mb-1"
+                className="text-sm text-white/80 cursor-pointer select-none"
               >
                 ¿Está completada?
               </label>
-              <select
-                name="is_completed"
-                id="is_completed"
-                value={formState.is_completed}
-                onChange={handleChange}
-                className="bg-[#1e1e1e] border border-white/20 rounded-lg px-4 py-2 text-white/90 focus:outline-none focus:ring-2 focus:ring-[#ff2d55]/40 appearance-none"
-              >
-                <option value="" className="bg-[#1e1e1e] text-white/80">
-                  Seleccioná una opción
-                </option>
-                <option value="true" className="bg-[#1e1e1e] text-white/80">
-                  Sí
-                </option>
-                <option value="false" className="bg-[#1e1e1e] text-white/80">
-                  No
-                </option>
-              </select>
             </div>
 
             {/* Botón de enviar */}

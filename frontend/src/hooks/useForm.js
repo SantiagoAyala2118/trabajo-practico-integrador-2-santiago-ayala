@@ -5,11 +5,11 @@ export const useForm = (initialState) => {
 
   //* FUNCION HANDLECHANGE
   const handleChange = ({ target }) => {
-    const { name, value } = target;
+    const { name, value, type, checked } = target;
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -18,6 +18,7 @@ export const useForm = (initialState) => {
     setFormState(initialState);
   };
 
+  //* FUNCION HANDLESUBMIT
   const handleSubmit = (e) => {
     e.preventDefault();
     handleReset();
