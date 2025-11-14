@@ -138,7 +138,7 @@ export const HomePage = () => {
           {/* Imagen / resumen pequeño (opcional) */}
           <div className="w-full md:w-64 flex-shrink-0">
             <div className="bg-gradient-to-br from-white/3 to-white/2 p-4 rounded-xl border border-white/6">
-              <img src="../public/logo-sin-fondo-2.png" alt="Logotipo marca" />
+              <img src="../logo-sin-fondo-2.png" alt="Logotipo marca" />
             </div>
           </div>
         </section>
