@@ -43,7 +43,7 @@ export const Navbar = ({ onAuth = false, onLogout }) => {
           </button>
 
           <img
-            src="../public/logo-sin-fondo-2.png"
+            src="../logo-sin-fondo-2.png"
             className="w-60 h-25 text-lg font-semibold tracking-wide text-white/90 cursor-pointer"
             onClick={() => {
               // ir a home si no estamos
@@ -84,7 +84,7 @@ export const Navbar = ({ onAuth = false, onLogout }) => {
               </NavLink>
 
               <NavLink
-                to="/profile"
+                to="/user-profile"
                 className={({ isActive }) =>
                   `tracking-wide transition ${
                     isActive
