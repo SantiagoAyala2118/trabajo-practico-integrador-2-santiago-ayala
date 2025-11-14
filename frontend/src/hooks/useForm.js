@@ -28,5 +28,6 @@ export const useForm = (initialState) => {
     handleChange,
     handleSubmit,
     handleReset,
+    setFormState,
   };
 };
