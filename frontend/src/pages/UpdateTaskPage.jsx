@@ -1,141 +1,239 @@
 import { Loading } from "../components/Loading";
 import { useForm } from "../hooks/useForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 export const UpdateTaskPage = () => {
-  const { formState, handleChange, handleSubmit } = useForm({
+  const { formState, handleChange, handleSubmit, setFormState } = useForm({
     title: "",
     description: "",
     is_completed: "",
   });
   const [loading, setLoading] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
-  const navigate = useNavigate();
+  //* FUNCIÓN PARA TRAER LAS TAREAS DEL USUARIO LOGUEADO
+  const getTasks = async () => {
+    setLoading(true);
 
-  const updateTaskFetch = async () => {
     try {
-      setLoading(true);
+      const tasksFetch = await fetch(
+        "http://localhost:3000/api/tasks-by-user",
+        {
+          credentials: "include",
+        }
+      );
 
-      const newTask = await fetch("http://localhost:3000/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(formState),
-      });
+      if (!tasksFetch.ok) {
+        setTasks([]);
+        setLoading(false);
+        console.log("Error en las tasks");
+        return;
+      }
 
-      if (!newTask.ok) {
-        console.log("No se pudo crear la tarea");
+      const userTasks = await tasksFetch.json();
+      setTasks(userTasks);
+      setLoading(false);
+    } catch (err) {
+      console.log("Error consiguiendo las tasks", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //* FUNCIÓN PARA ACTUALIZAR UNA TAREA
+  const handleUpdate = async () => {
+    setLoading(true);
+
+    try {
+      const updateTask = await fetch(
+        `http://localhost:3000/api/tasks/${selectedTask.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(formState),
+        }
+      );
+
+      if (!updateTask.ok) {
+        console.log(
+          "No se pudo actualizar la tarea",
+          updateTask.statusText,
+          updateTask.status
+        );
         setLoading(false);
         return;
       }
 
-      const data = await newTask.json();
-      console.log(data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      navigate("/tasks");
+      setSelectedTask(null);
+
+      getTasks();
+
       setLoading(false);
     } catch (err) {
-      console.log("Error creando la tarea en el fetch", err);
+      console.log("Error actualizando una tarea");
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getTasks();
+  }, []);
 
   if (loading) {
     <Loading />;
   }
 
   return (
-    <main className="min-h-[70vh] py-12 bg-black/90 text-white">
-      <div className="max-w-3xl mx-auto px-4">
-        {/* Encabezado */}
-        <section className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-10 shadow-lg mb-8">
-          <h1 className="text-3xl font-semibold mb-2">Crear nueva tarea</h1>
-          <p className="text-white/70 text-sm max-w-lg">
-            Completá el formulario para agregar una nueva tarea a tu lista.
-          </p>
-        </section>
+    <>
+      <div className="min-h-screen bg-black/90 text-white p-6">
+        {/* LISTA DE TAREAS */}
+        {tasks.length > 0 ? (
+          <ul className="space-y-3 max-w-xl mx-auto">
+            {tasks.map((task) => (
+              <li
+                key={task.id}
+                onClick={() => (
+                  setSelectedTask(task),
+                  setFormState({
+                    title: task.title,
+                    description: task.description,
+                    is_completed:
+                      task.is_completed == true || task.is_completed == 1
+                        ? "true"
+                        : "false",
+                  })
+                )}
+                className="flex items-center justify-between bg-white/5 border border-white/10 
+              p-4 rounded-xl cursor-pointer hover:bg-white/10 transition"
+              >
+                <div className="text-sm text-white/90 font-medium">
+                  {task.title ?? "Sin título"}
+                </div>
 
-        {/* Formulario */}
-        <section className="bg-white/4 border border-white/8 rounded-2xl p-6 shadow-md">
-          <form
-            onSubmit={(e) => (handleSubmit(e), updateTaskFetch())}
-            className="flex flex-col gap-5 text-white/90"
+                <span
+                  className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                    task.is_completed == true || task.is_completed == 1
+                      ? "bg-green-600/30 text-green-400"
+                      : "bg-red-600/30 text-red-400"
+                  }`}
+                >
+                  {task.is_completed == true || task.is_completed == 1
+                    ? "Completada"
+                    : "Pendiente"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="py-6 text-center text-white/60">
+            Parece que no tenés tareas por ahora 💤
+          </div>
+        )}
+
+        {/* MODAL */}
+        {selectedTask && (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-task-title"
           >
-            {/* Campo título */}
-            <div className="flex flex-col">
-              <label htmlFor="title" className="text-sm text-white/70 mb-1">
-                Título
-              </label>
-              <input
-                type="text"
-                name="title"
-                id="title"
-                value={formState.title}
-                onChange={handleChange}
-                placeholder="Ej: Estudiar para el parcial"
-                className="bg-white/10 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/50 placeholder:text-white/50"
-              />
-            </div>
+            <div className="bg-white/10 border border-white/20 rounded-2xl p-6 w-full max-w-lg shadow-xl">
+              <h2
+                id="edit-task-title"
+                className="text-xl font-semibold text-white mb-1"
+              >
+                Editar tarea
+              </h2>
 
-            {/* Campo descripción */}
-            <div className="flex flex-col">
-              <label
-                htmlFor="description"
-                className="text-sm text-white/70 mb-1"
-              >
-                Descripción
-              </label>
-              <textarea
-                name="description"
-                id="description"
-                value={formState.description}
-                onChange={handleChange}
-                placeholder="Agregá una breve descripción de la tarea"
-                className="bg-white/10 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00d4ff]/50 placeholder:text-white/50 resize-none h-24"
-              ></textarea>
-            </div>
+              <p className="text-sm text-white/70 mb-4 truncate">
+                {selectedTask.title}
+              </p>
 
-            {/* Campo completada */}
-            <div className="flex flex-col">
-              <label
-                htmlFor="is_completed"
-                className="text-sm text-white/70 mb-1"
+              <form
+                onSubmit={(e) => (handleUpdate(), handleSubmit(e))}
+                className="flex flex-col gap-4"
               >
-                ¿Está completada?
-              </label>
-              <select
-                name="is_completed"
-                id="is_completed"
-                value={formState.is_completed}
-                onChange={handleChange}
-                className="bg-[#1e1e1e] border border-white/20 rounded-lg px-4 py-2 text-white/90 focus:outline-none focus:ring-2 focus:ring-[#ff2d55]/40 appearance-none"
-              >
-                <option value="" className="bg-[#1e1e1e] text-white/80">
-                  Seleccioná una opción
-                </option>
-                <option value="true" className="bg-[#1e1e1e] text-white/80">
-                  Sí
-                </option>
-                <option value="false" className="bg-[#1e1e1e] text-white/80">
-                  No
-                </option>
-              </select>
-            </div>
+                <div className="flex flex-col">
+                  <label htmlFor="title" className="text-sm text-white/70 mb-1">
+                    Título
+                  </label>
+                  <input
+                    id="title"
+                    name="title"
+                    value={formState.title}
+                    onChange={handleChange}
+                    placeholder="Ej: Estudiar para el parcial"
+                    className="bg-white/10 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/40 text-white placeholder:text-white/50"
+                  />
+                </div>
 
-            {/* Botón de enviar */}
-            <div className="flex justify-end mt-4">
-              <button
-                type="submit"
-                className="py-2 px-5 rounded-lg bg-gradient-to-r from-[#0047ff]/60 to-[#ff355e]/60 hover:from-[#0047ff] hover:to-[#ff355e] hover:cursor-pointer transition shadow-sm font-medium"
-              >
-                Crear tarea
-              </button>
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="description"
+                    className="text-sm text-white/70 mb-1"
+                  >
+                    Descripción
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formState.description}
+                    onChange={handleChange}
+                    placeholder="Agregá una breve descripción"
+                    className="bg-white/10 border border-white/10 rounded-lg px-4 py-3 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-[#00d4ff]/40 text-white placeholder:text-white/50"
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="is_completed"
+                    className="text-sm text-white/70 mb-1"
+                  >
+                    ¿Está completada?
+                  </label>
+                  <select
+                    id="is_completed"
+                    name="is_completed"
+                    value={formState.is_completed}
+                    onChange={handleChange}
+                    className="bg-[#1e1e1e] border border-white/20 rounded-lg px-4 py-2 text-white/90 focus:outline-none focus:ring-2 focus:ring-[#ff2d55]/40 appearance-none"
+                  >
+                    <option value="">Seleccioná</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+
+                <div className="flex justify-end gap-3 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTask(null)}
+                    className="px-4 py-2 rounded-lg border border-white/20 text-white/80 hover:bg-white/10 transition"
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#0047ff]/60 to-[#ff355e]/60 hover:from-[#0047ff] hover:to-[#ff355e] text-white font-medium transition"
+                  >
+                    Guardar
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
-        </section>
+          </div>
+        )}
       </div>
-    </main>
+    </>
   );
 };

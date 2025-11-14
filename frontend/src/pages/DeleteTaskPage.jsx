@@ -7,6 +7,7 @@ export const DeleteTaskPage = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  //* FUNCIÓN PARA TRAER LAS TAREAS DEL USUARIO LOGUEADO
   const getTasks = async () => {
     setIsLoading(true);
 
@@ -35,6 +36,7 @@ export const DeleteTaskPage = () => {
     }
   };
 
+  //* FUNCION PARA ELIMINAR UNA TAREA
   const handleDelete = async () => {
     setIsLoading(true);
     try {
